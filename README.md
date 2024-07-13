@@ -35,8 +35,100 @@ KIT_BODY = {
 
 ## ![v2](https://github.com/GorgeousTV/Pytest-API-Yandex.Prilavok/assets/144271169/be815888-48c0-4312-9b33-694ba8829463) Файл с реквестами
 
-![реквесты](https://github.com/GorgeousTV/Pytest-API-Yandex.Prilavok/assets/144271169/1066862e-ad67-40b2-a12e-ba3e963d2b0b)
+``
+import requests
+import configuration
+import data
+
+
+def create_token():
+    response = requests.post(configuration.URL_SERVICE + configuration.CREATE_USER_PATH, json=data.USER_BODY, headers=data.headers)
+    authToken = 'Bearer ' + response.json()["authToken"]
+    return authToken
+
+def create_headers(key, value):
+    token = data.HEADERS_KIT.copy()
+    token[key] = value
+    return token
+
+def create_kit(body):
+    return requests.post(configuration.URL_SERVICE + configuration.CREATE_KIT_PATH,
+                             headers=create_headers('Authorization', create_token()),
+                             json=body)
+
+
+def get_kit_body():
+    response = requests.post(configuration.URL_SERVICE + configuration.CREATE_KIT_PATH, headers = data.HEADERS_KIT, json=data.KIT_BODY)
+    return response.json()
+``
 
 ## ![v2](https://github.com/GorgeousTV/Pytest-API-Yandex.Prilavok/assets/144271169/be815888-48c0-4312-9b33-694ba8829463) Файл с тестами
 
-![создание_тестов](https://github.com/GorgeousTV/Pytest-API-Yandex.Prilavok/assets/144271169/114c6bac-90c5-4e6c-b6e1-28a96634f9db)
+``
+import data
+import send_request
+
+
+def modify_create_name_kit(key, value):
+    body = data.KIT_BODY.copy()
+    body[key] = value
+    return body
+
+def positive_assert(key, value):
+    kit_body = modify_create_name_kit(key, value)
+    kit_response = send_request.create_kit(kit_body)
+
+    assert kit_response.status_code == 201
+    assert kit_response.json()['name'] == value
+
+def negative_assert(key, value):
+    kit_body = modify_create_name_kit(key, value)
+    response = send_request.create_kit(kit_body)
+    assert response.status_code == 400
+    assert response.json()['code'] == 400
+    assert response.json()['message'] == "Не все необходимые параметры были переданы"
+
+def no_name_assert():
+    body = data.KIT_BODY.copy()
+    body.pop('name')
+    return body
+
+def negative_assert_no_name_kit():
+    kit_body = no_name_assert()
+    response = send_request.create_kit(kit_body)
+    assert response.status_code == 400
+    assert response.json()['message'] == "Не все необходимые параметры были переданы"
+
+def test_create_kit_with_name_one_symbol():
+    positive_assert('name', 'N')
+
+def test_create_kit_with_name_max_symbol():
+    positive_assert('name', 'AbcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdAbcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabC')
+
+def test_create_kit_empty_name_symbol():
+    negative_assert('name', '')
+
+def test_create_kit_max_plus_one_more_name_symbol():
+    negative_assert('name', 'AbcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdAbcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcD')
+
+def test_create_kit_eng_symbol():
+    positive_assert('name', 'QWErty')
+
+def test_create_kit_rus_symbol():
+    positive_assert('name', 'Мария')
+
+def test_create_kit_with_spec_symbol():
+    positive_assert('name', '"№%@",')
+
+def test_create_kit_with_spaces():
+    positive_assert('name', ' Человек и КО ')
+
+def test_create_kit_with_numbers():
+    positive_assert('name', '123')
+
+def test_create_kit_with_type_int_key_value():
+    negative_assert('name', 123)
+
+def test_create_kit_no_name():
+    negative_assert_no_name_kit()
+``
