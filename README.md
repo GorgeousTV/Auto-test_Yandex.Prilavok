@@ -11,7 +11,8 @@ CREATE_KIT_PATH = "/api/v1/kits"``
 
 ## ![v2](https://github.com/GorgeousTV/Pytest-API-Yandex.Prilavok/assets/144271169/be815888-48c0-4312-9b33-694ba8829463) Файл с заголовками и телами запросов
 
-'' headers = {
+``
+headers = {
     "Content-Type": "application/json"
 }
 
@@ -29,7 +30,8 @@ USER_BODY = {
 
 KIT_BODY = {
        "name": "Мой набор"
-} ''
+}
+``
 
 ## ![v2](https://github.com/GorgeousTV/Pytest-API-Yandex.Prilavok/assets/144271169/be815888-48c0-4312-9b33-694ba8829463) Файл с реквестами
 
