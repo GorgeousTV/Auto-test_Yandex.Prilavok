@@ -4,7 +4,10 @@
 
 ## ![v2](https://github.com/GorgeousTV/Pytest-API-Yandex.Prilavok/assets/144271169/be815888-48c0-4312-9b33-694ba8829463) Файл конфигурации
 
-![конфига](https://github.com/GorgeousTV/Pytest-API-Yandex.Prilavok/assets/144271169/93b301e1-b2bd-4d36-a354-4606a98c0716)
+``URL_SERVICE = "https://55324992-6e7b-4b1e-927e-dbb3f5a6e059.serverhub.praktikum-services.ru"
+DOC_PATH = "/docs/"
+CREATE_USER_PATH = "/api/v1/users/"
+CREATE_KIT_PATH = "/api/v1/kits"``
 
 ## ![v2](https://github.com/GorgeousTV/Pytest-API-Yandex.Prilavok/assets/144271169/be815888-48c0-4312-9b33-694ba8829463) Файл с заголовками и телами запросов
 
